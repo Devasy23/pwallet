@@ -1,46 +1,43 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../utils/constants.dart';
 
 class ApiService {
-  static const String _baseUrl = 'https://peculiar-kaitlin-devasy.koyeb.app/';
-  
-  // Method for user login
-  static Future<Map<String, dynamic>> login(String username, String password) async {
-    try {
-      var url = Uri.parse('$_baseUrl/api/v1/user/login');
-      var response = await http.post(url, body: {
+  Future<Map<String, dynamic>> loginUser(String username, String password) async {
+    final response = await http.post(
+      Uri.parse(ApiConstants.loginUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
         'username': username,
         'password': password,
-      });
+      }),
+    );
 
-      if (response.statusCode == 200) {
-        return {'isSuccess': true, 'data': json.decode(response.body)};
-      } else {
-        return {'isSuccess': false, 'message': 'Invalid credentials'};
-      }
-    } catch (e) {
-      return {'isSuccess': false, 'message': 'An error occurred: $e'};
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to login user');
     }
   }
 
-  // Method for user registration
-  static Future<Map<String, dynamic>> signUp(String username, String password) async {
-    try {
-      var url = Uri.parse('$_baseUrl/api/v1/user/register');
-      var response = await http.post(url, body: {
+  Future<Map<String, dynamic>> registerUser(String username, String password) async {
+    final response = await http.post(
+      Uri.parse(ApiConstants.registerUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
         'username': username,
         'password': password,
-      });
+      }),
+    );
 
-      if (response.statusCode == 200) {
-        return {'isSuccess': true, 'data': json.decode(response.body)};
-      } else {
-        return {'isSuccess': false, 'message': 'Error during registration'};
-      }
-    } catch (e) {
-      return {'isSuccess': false, 'message': 'An error occurred: $e'};
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to register user');
     }
   }
-
-  // Additional methods for other API interactions can be added here
 }
