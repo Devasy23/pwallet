@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import 'dashboard_page.dart';
 import 'register_page.dart';
 
 class LoginPage extends StatelessWidget {
@@ -29,19 +30,7 @@ class LoginPage extends StatelessWidget {
                 obscureText: true,
               ),
               ElevatedButton(
-                onPressed: () async {
-                  try {
-                    final response = await _apiService.loginUser(
-                      _usernameController.text,
-                      _passwordController.text,
-                    );
-                    print('Login successful: $response');
-                    // Navigate to another page or show a success message
-                  } catch (e) {
-                    print('Login error: $e');
-                    // Show an error message
-                  }
-                },
+                onPressed: () => _login(context),
                 child: Text('Login'),
               ),
               TextButton(
@@ -57,6 +46,46 @@ class LoginPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _login(BuildContext context) async {
+    try {
+      final response = await _apiService.loginUser(
+        _usernameController.text,
+        _passwordController.text,
+      );
+      if (response['message'] == 'User authenticated successfully') {
+        // Store token and user data as needed
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardPage()),
+        );
+      } else {
+        _showDialog(context, 'Login Failed', 'Invalid credentials or server error.');
+      }
+    } catch (e) {
+      _showDialog(context, 'Login Error', e.toString());
+    }
+  }
+
+  void _showDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
