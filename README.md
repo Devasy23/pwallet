@@ -1,8 +1,9 @@
-# myapp
+# Wallet App
 
-A new Flutter project.
+[![Flutter Build](https://github.com/Devasy23/pwallet/actions/workflows/flutter.yml/badge.svg)](https://github.com/Devasy23/pwallet/actions/workflows/flutter.yml)
 
 ## Getting Started
+
 
 ```
 /wallet_app
