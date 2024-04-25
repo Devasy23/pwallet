@@ -3,10 +3,26 @@ import '../services/api_service.dart';
 import 'dashboard_page.dart';
 import 'register_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> { 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
   final ApiService _apiService = ApiService();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _usernameFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +37,12 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               TextField(
+                focusNode: _usernameFocusNode,
                 controller: _usernameController,
                 decoration: InputDecoration(labelText: 'Username'),
               ),
               TextField(
+                focusNode: _passwordFocusNode,
                 controller: _passwordController,
                 decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
@@ -35,13 +53,16 @@ class LoginPage extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
+                  // Clear focus before navigating
+                  _usernameFocusNode.unfocus();
+                  _passwordFocusNode.unfocus();
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterPage()),
                   );
                 },
                 child: Text('Register Now'),
-              )
+              ),
             ],
           ),
         ),
@@ -50,6 +71,10 @@ class LoginPage extends StatelessWidget {
   }
 
   void _login(BuildContext context) async {
+    // Clear focus when attempting login
+    _usernameFocusNode.unfocus();
+    _passwordFocusNode.unfocus();
+
     try {
       final response = await _apiService.loginUser(
         _usernameController.text,
