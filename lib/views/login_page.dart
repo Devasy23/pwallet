@@ -29,6 +29,50 @@ class _AuthPageState extends State<AuthPage> {
     });
   }
 
+  void _submit() async {
+    final username = _usernameController.text;
+    final password = _passwordController.text;
+    try {
+      if (_authMode == AuthMode.login) { // Handling login
+        final response = await _apiService.loginUser(username, password);
+        if (response['message'] == 'User authenticated successfully') {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DashboardPage()));
+        } else {
+          _showDialog('Login Failed', 'Invalid credentials or server error.');
+        }
+      } else { // Handling registration
+        final response = await _apiService.registerUser(username, password);
+        if (response['message'] == 'User registered successfully') {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => DashboardPage()));
+        } else {
+          _showDialog('Registration Failed', 'Failed to register user or server error.');
+        }
+      }
+    } catch (e) {
+      _showDialog('Error', e.toString());
+    }
+  }
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLoginMode = _authMode == AuthMode.login;
@@ -44,7 +88,7 @@ class _AuthPageState extends State<AuthPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FlutterLogo(size: 120), // Placeholder for app logo
+                FlutterLogo(size: 120),
                 SizedBox(height: 24),
                 Text(
                   isLoginMode ? 'Welcome Back' : 'Create Account',
@@ -69,7 +113,7 @@ class _AuthPageState extends State<AuthPage> {
                     prefixIcon: Icon(Icons.lock),
                   ),
                 ),
-                SizedBox(height: 16),
+SizedBox(height: 16),
                 Align(
                   alignment: Alignment.centerRight,
                   child: InkWell(
@@ -84,12 +128,10 @@ class _AuthPageState extends State<AuthPage> {
                 ),
                 SizedBox(height: 24),
                 ElevatedButton(
-                  onPressed: () {
-                    
-                  },
+                  onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor, // Button background color
-                    foregroundColor: Colors.white, // Button text color
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

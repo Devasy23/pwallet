@@ -1,16 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'accounts_page.dart'
+import 'accounts_page.dart';
 
-class DashboardPage extends StatelessWidget {
-  final String userName = "John Doe";
-  final double totalBalance = 15000.00;
-  final double inflow = 5000.00;
-  final double outflow = 1000.00;
+String userName = 'User';
+double totalBalance = 1000.0;
+double inflow = 500.0;
+double outflow = 200.0;
+
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key}) : super(key: key);
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  int _selectedIndex = 0;
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+      routes: {
+    '/dashboard': (context) => DashboardPage(),
+    '/accounts': (context) => AccountsPage(),
+    // '/transactions': (context) => TransactionsPage(), // Define this page
+    // '/debts': (context) => DebtsPage(), // Define this page
+    // '/analysis': (context) => AnalysisPage(), // Define this page
+  },
+        home: Scaffold(
       appBar: AppBar(
         title: Text('Dashboard'),
         centerTitle: true,
@@ -23,7 +40,7 @@ class DashboardPage extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-    );
+    ));
   }
 
   Widget _buildTopSection() {
@@ -39,7 +56,10 @@ class DashboardPage extends StatelessWidget {
           SizedBox(height: 10),
           Text(
             'Total Balance: \$${totalBalance.toStringAsFixed(2)}',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+            style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple),
           ),
           SizedBox(height: 5),
           Row(
@@ -69,7 +89,8 @@ class DashboardPage extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
             leading: Icon(Icons.attach_money),
-            title: Text('Transaction ${index + 1}', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('Transaction ${index + 1}',
+                style: TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text('Details of Transaction ${index + 1}'),
             isThreeLine: true,
           );
@@ -84,27 +105,26 @@ class DashboardPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-ElevatedButton(
-  onPressed: () {},
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.blue, // Button color
-    foregroundColor: Colors.white, // Text color
-    shadowColor: Colors.blueAccent, // Shadow color
-    elevation: 8,
-  ),
-  child: Text('Add Income'),
-),
-ElevatedButton(
-  onPressed: () {},
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.red, // Button color
-    foregroundColor: Colors.white, // Text color
-    shadowColor: Colors.redAccent, // Shadow color
-    elevation: 8,
-  ),
-  child: Text('Add Expense'),
-),
-
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue, // Button color
+              foregroundColor: Colors.white, // Text color
+              shadowColor: Colors.blueAccent, // Shadow color
+              elevation: 8,
+            ),
+            child: Text('Add Income'),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red, // Button color
+              foregroundColor: Colors.white, // Text color
+              shadowColor: Colors.redAccent, // Shadow color
+              elevation: 8,
+            ),
+            child: Text('Add Expense'),
+          ),
         ],
       ),
     );
@@ -136,6 +156,45 @@ ElevatedButton(
         ),
       ],
       selectedItemColor: Colors.amber[800],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
     );
   }
+
+  void _onItemTapped(int index) {
+  if (_selectedIndex != index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        if (ModalRoute.of(context)?.settings.name != '/dashboard') {
+          Navigator.pushReplacementNamed(context, '/dashboard');
+        }
+        break;
+      case 1:
+        if (ModalRoute.of(context)?.settings.name != '/accounts') {
+          Navigator.pushReplacementNamed(context, '/accounts');
+        }
+        break;
+      // case 2:
+      //   if (ModalRoute.of(context)?.settings.name != '/transactions') {
+      //     Navigator.pushReplacementNamed(context, '/transactions');
+      //   }
+      //   break;
+      // case 3:
+      //   if (ModalRoute.of(context)?.settings.name != '/debts') {
+      //     Navigator.pushReplacementNamed(context, '/debts');
+      //   }
+      //   break;
+      // case 4:
+      //   if (ModalRoute.of(context)?.settings.name != '/analysis') {
+      //     Navigator.pushReplacementNamed(context, '/analysis');
+      //   }
+      //   break;
+    }
+  }
+}
+
 }

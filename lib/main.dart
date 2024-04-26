@@ -14,7 +14,7 @@ class MyWalletApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage(),
+      home: AuthPage(),
     );
   }
 }
